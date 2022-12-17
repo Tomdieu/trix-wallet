@@ -10,8 +10,9 @@ class User extends Model {
    * @param {string} password
    * @returns
    */
-  verifyPassword(password) {
-    return true;
+  async verifyPassword(password) {
+    const result = await bcrypt.compare(password,this.password);
+    return result;
   }
 
   /**
@@ -20,7 +21,10 @@ class User extends Model {
    *
    * @param {string} password
    */
-  setPassword(password) {}
+  async setPassword(password) {
+    this.password = await bcrypt.hash(password, 10);
+    await this.save()
+  }
 
   /**
    * Returns the full name of a user
@@ -91,12 +95,14 @@ User.init(
         // return hashPassword;
       },
       afterCreate: (user, options) => {
-        const Token = require('./Token')
-        const Account = require('./Account')
+        const Token = require("./Token");
+        const Account = require("./Account");
 
-        Token.create({user_id:user.id})
-        Account.create({user_id:user.id})
-        
+        Token.create({ user_id: user.id });
+        Account.create({
+          user_id: user.id,
+          account_number: Number(10000000 + user.id),
+        });
       },
     },
   }

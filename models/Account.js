@@ -48,32 +48,7 @@ Account.init(
     modelName: "account",
     createdAt: "created_at",
     updatedAt: "updated_at",
-    hooks: {
-      beforeCreate: (instance, option) => {
-        console.log(
-          "Enter with " + instance.isNewRecord + " and " + instance.id
-        );
-        if(instance.isNewRecord){
-
-          instance.account_number = Number(10000000 + 100);
-        }
-        console.log(instance.toJSON())
-        // instance.account_number = Number(
-        //   [...Array(32)].map((_) => (Math.random() * 10) | 0).join("")
-        // );
-      },
-      afterCreate:(instance,option)=>{
-        console.log(instance.toJSON())
-        
-        if(instance.id && instance.account_number === Number(10000000 + 100)){
-          console.log(true)
-          instance.account_number=Number(10000000 + instance.id)
-          instance.save('account_number').then(dt=>console.log(dt.toJSON())).catch(e=>console.log(e))
-        }else{
-          console.log(false)
-        }
-      }
-    },
+   
   }
 );
 
