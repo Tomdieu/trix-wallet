@@ -39,6 +39,7 @@ User.init(
     },
     username: {
       type: DataTypes.STRING,
+      unique:true,
       allowNull: false,
     },
     first_name: {
@@ -47,6 +48,7 @@ User.init(
     },
     last_name: {
       type: DataTypes.STRING,
+      defaultValue:''
     },
     email: {
       type: DataTypes.STRING,
@@ -83,5 +85,6 @@ User.init(
     updatedAt: "updated_at",
   }
 );
+
 
 module.exports = User;
