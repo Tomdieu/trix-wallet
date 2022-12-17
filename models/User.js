@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../utils/database");
+const bcrypt = require("bcrypt");
 
 class User extends Model {
   /**
@@ -39,7 +40,7 @@ User.init(
     },
     username: {
       type: DataTypes.STRING,
-      unique:true,
+      unique: true,
       allowNull: false,
     },
     first_name: {
@@ -48,7 +49,7 @@ User.init(
     },
     last_name: {
       type: DataTypes.STRING,
-      defaultValue:''
+      defaultValue: "",
     },
     email: {
       type: DataTypes.STRING,
@@ -83,8 +84,22 @@ User.init(
     modelName: "user",
     createdAt: "created_at",
     updatedAt: "updated_at",
+    hooks: {
+      beforeCreate: async (user, options) => {
+        const hashPassword = await bcrypt.hash(user.password, 10);
+        user.password = hashPassword;
+        // return hashPassword;
+      },
+      afterCreate: (user, options) => {
+        const Token = require('./Token')
+        const Account = require('./Account')
+
+        Token.create({user_id:user.id})
+        Account.create({user_id:user.id})
+        
+      },
+    },
   }
 );
-
 
 module.exports = User;

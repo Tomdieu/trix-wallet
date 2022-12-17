@@ -7,9 +7,8 @@ const userSchema = {
       custom: {
         options: async (value) => {
           const user = await User.findOne({ where: { username: value } });
-          console.log("The user ", user);
           if (user != null) {
-            return Promis.reject("username already exists");
+            return Promise.reject("username already exists");
           }
         },
       },

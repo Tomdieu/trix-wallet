@@ -25,4 +25,4 @@ Token.init(
   { sequelize, tableName: "auth_token", timestamps: false }
 );
 
-module.export = Token;
+module.exports = Token;
