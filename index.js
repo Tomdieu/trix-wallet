@@ -1,42 +1,33 @@
 const express = require("express");
 
-const cron = require('node-cron')
+const cron = require("node-cron");
 
-const sequelize = require("./utils/database");
-const {user} = require('./routes/auth')
-const {square} = require('./tasks')
-
+const { user } = require("./routes/auth");
+const { square } = require("./tasks");
 
 require("./models");
-
-sequelize
-  .sync()
-  .then(() => console.log("Db is ready!"))
-  .catch(() => {
-    console.log("An Error Occur Could Not Created Tables");
-  });
 
 const app = express();
 
 // parse json
 app.use(express.json());
 
-//parse form data 
+//parse form data
 app.use(express.urlencoded({ extended: false }));
 
 const PORT = process.env.PORT | 5000;
-console.log(process.env.PORT)
+console.log(process.env.PORT);
 
-app.use('/user',user);
+app.use("/user", user);
 
 app.get("/", (req, res) => {
   res.status(200).send("<h1>Welcome To My Nodejs TrixWallet API</h1>");
 });
 
 // run automatic tasks
-cron.schedule('*/15 * * * * *',()=>{
+cron.schedule("*/15 * * * * *", () => {
   // square(Math.floor(Math.random()*99))
-})
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on PORT ${PORT} at http://127.0.0.1:${PORT}`);
