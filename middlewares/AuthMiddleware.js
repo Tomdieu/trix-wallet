@@ -8,7 +8,7 @@ const AuthMiddleWare = async (req, res, next) => {
     if (_ !== "token" || !token) {
       res
         .status(400)
-        .send({ error: true, message: "Authorization required" });
+        .send({ error: true,success:false, message: "Authorization required" });
     } else {
       const { Token, User } = require("../models/");
       const tk = await Token.findOne({ where: { key: token } });
@@ -20,7 +20,7 @@ const AuthMiddleWare = async (req, res, next) => {
       } else {
         res
           .status(400)
-          .send({ error: true, message: "Please provide a valid token" });
+          .send({ error: true, success:false,message: "Please provide a valid token" });
       }
     }
   }

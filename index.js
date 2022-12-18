@@ -2,7 +2,7 @@ const express = require("express");
 
 const cron = require("node-cron");
 
-const { user } = require("./routes/auth");
+const routes = require("./routes");
 const { square } = require("./tasks");
 
 require("./models");
@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 const PORT = process.env.PORT | 5000;
 console.log(process.env.PORT);
 
-app.use("/user", user);
+app.use("/api", routes);
 
 app.get("/", (req, res) => {
   res.status(200).send("<h1>Welcome To My Nodejs TrixWallet API</h1>");

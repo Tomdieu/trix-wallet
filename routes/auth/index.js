@@ -1,3 +1,4 @@
+const userRoutes = require("./user");
 module.exports = {
-    user:require('./user')
-}
+    userRoutes
+};

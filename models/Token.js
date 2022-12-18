@@ -19,6 +19,7 @@ Token.init(
       refrences: {
         model: User,
         key: "id",
+        onDelete:'CASCADE'
       },
     },
   },

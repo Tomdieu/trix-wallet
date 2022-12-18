@@ -35,11 +35,16 @@ Account.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    pin_code:{
+      type:DataTypes.STRING,
+      defaultValue:'00000',
+    },
     user_id: {
       type: DataTypes.BIGINT,
       references: {
         model: User,
         key: "id",
+        onDelete:'CASCADE'
       },
     },
   },
