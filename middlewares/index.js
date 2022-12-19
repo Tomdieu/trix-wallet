@@ -1,4 +1,5 @@
 module.exports = {
     TokenMiddleWare:require('./AuthMiddleware'),
-    AdminMiddleware:require('./AdminMiddleware')
+    AdminMiddleware:require('./AdminMiddleware'),
+    AgentMiddleware:require('./IsAgentMiddleware')
 }

@@ -134,7 +134,7 @@ const transferMoney = async (req, res) => {
     res.send({
       success: false,
       data: t.toJSON(),
-      message: "transaction successfully",
+      message: "transfer rejected",
     });
   } else {
     sender_account.decrement(["balance"], { by: Number(amount) });
@@ -173,7 +173,7 @@ const transferMoney = async (req, res) => {
     res.send({
       success: true,
       data: {transaction:t.toJSON(),account:sender_account.toJSON()},
-      message: "transaction successfully",
+      message: "transfer successfull",
     });
   }
 
@@ -182,7 +182,95 @@ const transferMoney = async (req, res) => {
 
 const withdrawMoney = (req, res) => {};
 
-const depositMoney = (req, res) => {
+const depositMoney = async (req, res) => {
+  const { reciever, amount } = req.body;
+  
+  const user = req.user;
+  const sender_account = await Account.findOne({
+    where: { user_id: user.id },
+  });
+
+  const reciever_account = await Account.findOne({
+    where: { account_number: reciever },
+  });
+
+  const charge = await TransactionCharge.findOne({
+    where: { name: "DEPOSIT" },
+  });
+
+  if (Number(amount) < 100) {
+    const t = await Transaction.create({
+      amount: Number(amount),
+      code: [...Array(8)].map(() => (Math.random() * 10) | 0).join(""),
+      charge: charge.id,
+      sender: sender_account.id,
+      reciever: reciever_account.id,
+      type: "TRANSFER",
+      status: "REJECTED",
+    });
+    if (user.lang == "FR") {
+      await Notification.create({
+        user_id: user.id,
+        message:
+          "Desoler vous ne pouvez pas faire le depot d'un montant inferieur a 100" +
+          sender_account.currency,
+        type: "DEPOSIT_REJECTED",
+      });
+    } else {
+      await Notification.create({
+        user_id: user.id,
+        message:
+          "Sorry you can\'t make a deposit of an amount lesser than 100" +
+          sender_account.currency,
+        type: "DEPOSIT_REJECTED",
+      });
+    }
+    res.send({
+      success: false,
+      data: t.toJSON(),
+      message: "deposit rejected",
+    });
+  }
+  else{
+    sender_account.decrement(["balance"], { by: Number(amount) });
+
+    reciever_account.increment(["balance"], { by: Number(amount) });
+
+    await sender_account.save();
+    await reciever_account.save();
+
+    const t = await Transaction.create({
+      amount: Number(amount),
+      code: [...Array(8)].map(() => (Math.random() * 10) | 0).join(""),
+      charge: charge.id,
+      sender: sender_account.id,
+      reciever: reciever_account.id,
+      type: "TRANSFER",
+      status: "SUCCESSFULL",
+    });
+    const reciever = await reciever_account.user()
+
+    if (user.lang == "FR") {
+      await Notification.create({
+        user_id: user.id,
+        message:
+          `Vous avez fair un depot ${Number(amount)} XAF a ${reciever.getFullName()} avec success. Code transaction ${t.code} nouveau solde : ${sender_account.balance} XAF` ,
+        type: "DEPOSIT_SUCCESSFULL",
+      });
+    }
+    else{
+      await Notification.create({
+        user_id: user.id,
+        message:`You have successfully deposit ${Number(amount)} XAF to ${reciever.getFullName()} successfully.Transaction code ${t.code} new balance : ${sender_account.balance} XAF`,
+        type: "DEPOSIT_SUCCESSFULL",
+      });
+    }
+    res.send({
+      success: true,
+      data: {transaction:t.toJSON(),account:sender_account.toJSON()},
+      message: "deposit successfull",
+    });
+  }
 
 };
 

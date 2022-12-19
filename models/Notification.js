@@ -24,6 +24,8 @@ Notification.init(
       type: DataTypes.ENUM([
         "NORMAL",
         "TRANSFER_SUCCESSFULL",
+        "DEPOSIT_SUCCESSFULL",
+        "DEPOSIT_REJECTED",
         "TRANSFER_REJECTED",
         "WITHDRAW_REJECTED",
         "WITHDRAW_CANCEL",

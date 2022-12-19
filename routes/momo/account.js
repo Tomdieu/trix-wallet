@@ -1,11 +1,13 @@
 const express = require("express");
 
-const { TokenMiddleWare, AdminMiddleware } = require("../../middlewares");
+const { TokenMiddleWare, AdminMiddleware ,AgentMiddleware} = require("../../middlewares");
 const { validate } = require("../../models/validation");
 
 const updateAccountSchema = require("../../models/schema/updateAccountSchema");
 const transactionChargeShema = require("../../models/schema/transactionChargeShema");
 const transferMoneySchema = require('../../models/schema/transferMoneySchema')
+const depositMoneySchema = require('../../models/schema/depostiMoneySchema')
+
 
 
 
@@ -16,7 +18,9 @@ const {
     transactionCharges,
     updateTransactionCharges,
     getTransactionCharges,
-    transferMoney
+    transferMoney,
+    depositMoney,
+    withdrawMoney
   },
 } = require("../../controllers");
 
@@ -53,5 +57,6 @@ router.patch(
 
 router.post('/transfer-money', TokenMiddleWare, validate(transferMoneySchema),transferMoney)
 
+router.post('/deposit',TokenMiddleWare,AgentMiddleware,validate(depositMoneySchema),depositMoney)
 
 module.exports = router;
