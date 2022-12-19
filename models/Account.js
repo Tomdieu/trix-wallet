@@ -3,7 +3,12 @@ const sequelize = require("../utils/database");
 
 const User = require("./User");
 
-class Account extends Model {}
+class Account extends Model {
+  async user(){
+    const user = await User.findByPk(this.user_id)
+    return user
+  }
+}
 
 Account.init(
   {
@@ -44,7 +49,7 @@ Account.init(
       references: {
         model: User,
         key: "id",
-        onDelete:'CASCADE'
+        allowNull:false
       },
       onDelete: 'CASCADE'
     },
@@ -59,5 +64,6 @@ Account.init(
 );
 
 // User.hasOne(Account)
+// Account.belongsTo(User)
 
 module.exports = Account;

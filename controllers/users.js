@@ -15,7 +15,6 @@ const getAllUsers = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  console.log(req.params);
   const { id } = req.params;
   const user = await User.findByPk(id);
   if (user) {
@@ -27,7 +26,6 @@ const getUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
-  console.log(req.headers["authorization"]);
   const user = await User.findOne({ where: { username: username } });
   if (user) {
     const verify = await user.verifyPassword(password);
@@ -62,8 +60,6 @@ const updateUser = async (req, res) => {
   }
   const { username, first_name, last_name, email, phone_number, is_superuser } =
     req.body;
-  console.log("the email : ", email);
-  // console.log(user.toJSON())
   if (username) user.username = username;
   if (first_name) user.first_name = first_name;
   if (last_name) user.last_name = last_name;

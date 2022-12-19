@@ -4,9 +4,9 @@ const sequelize = require("../utils/database");
 const Account = require("./Account");
 const TransactionCharge = require("./TransactionCharge");
 
-class Transfer extends Model {}
+class Transaction extends Model {}
 
-Transfer.init(
+Transaction.init(
   {
     code: {
       type: DataTypes.BIGINT,
@@ -16,9 +16,9 @@ Transfer.init(
     amount: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      validate:{
-        isInt:true,
-      }
+      validate: {
+        isInt: true,
+      },
     },
     charge: {
       type: DataTypes.INTEGER,
@@ -35,7 +35,7 @@ Transfer.init(
         key: "id",
       },
       allowNull: false,
-      onDelete: 'CASCADE'
+      onDelete: "SET NULL",
     },
     reciever: {
       type: DataTypes.BIGINT,
@@ -44,7 +44,7 @@ Transfer.init(
         key: "id",
       },
       allowNull: false,
-      onDelete: 'CASCADE'
+      onDelete: "SET NULL",
     },
     type: {
       type: DataTypes.STRING,
@@ -69,10 +69,19 @@ Transfer.init(
   },
   {
     sequelize,
+    hooks: {
+      afterCreate: async (transaction, option) => {
+        if (transaction) {
+          transaction.code = 2000000 + transaction.id;
+          const txn = await transaction.save();
+          return txn
+        }
+      },
+    },
     tableName: "transaction",
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );
 
-module.exports = Transfer;
+module.exports = Transaction;

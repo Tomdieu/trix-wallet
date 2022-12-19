@@ -33,6 +33,22 @@ class User extends Model {
     return this.first_name + " " + this.last_name;
   }
 
+  async getAccount(){
+    const Account = require('./Account');
+    const account = await Account.findOne({where:{user_id:this.id}})
+    return account
+  }
+
+  async getNtifications(){
+    const Notification = require('./Notification')
+    const notifications = Notification.findAll({where:{user_id:this.id}})
+
+    return notifications
+  }
+
+  notifications = this.getNtifications().then(d=>d) 
+
+  account = this.getAccount().then(acc=>acc)
 }
 
 User.init(

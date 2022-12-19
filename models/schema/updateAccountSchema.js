@@ -20,7 +20,7 @@ const updateAccountSchema = {
     custom: {
       options: async (value, { req }) => {
         if (value) {
-          if (/^(\d)+$/.test(value)) {
+          if (!(/^(\d)+$/.test(value))) {
             return Promise.reject("invalid value must be an integer");
           }
         }

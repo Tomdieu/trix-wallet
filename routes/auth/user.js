@@ -21,21 +21,7 @@ const {
     deleteUser,
   },
 } = require("../../controllers");
-/**
- *  @openapi
- *  api/auth/login:
- *  post:
- *   tags:
- *     - Login user
- *   summary: Login a user
- *   requestBody:
- *     required:true
- *     contents:
- *       application/json:
- *         schema:
- *          
- *  
- */
+
 router.post("/login", validate(loginSchema), loginUser);
 
 router.post("/register", validate(userSchema), createUser);

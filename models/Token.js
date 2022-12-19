@@ -19,12 +19,14 @@ Token.init(
       refrences: {
         model: User,
         key: "id",
-        onDelete:'CASCADE'
       },
       onDelete: 'CASCADE'
     },
   },
   { sequelize, tableName: "auth_token", timestamps: false }
 );
+
+// User.hasOne(Token)
+// Token.belongsTo(User)
 
 module.exports = Token;

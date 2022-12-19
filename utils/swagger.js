@@ -38,11 +38,11 @@ const options = {
     servers: [
       {
         description: "Development server",
-        url: "http://localhost:3000",
+        url: "http://localhost:5000",
       },
     ],
   },
-  apis: ['../routes',"../models/schema/*.js"],
+  apis: ['http://localhost:5000/api',"../index.js",'../routes/index.js',"../routes/auth/user.js","../routes/momo/account.js","../models/schema/*.js"],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

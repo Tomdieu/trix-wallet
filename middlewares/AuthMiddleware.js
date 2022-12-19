@@ -14,8 +14,9 @@ const AuthMiddleWare = async (req, res, next) => {
       const tk = await Token.findOne({ where: { key: token } });
       if (tk) {
         const user = await User.findByPk(tk.user_id);
-        const authenticated_user = user.toJSON();
-        req.user = authenticated_user;
+        req.user = user
+        // const authenticated_user = user.toJSON();
+        // req.user = authenticated_user;
         next();
       } else {
         res

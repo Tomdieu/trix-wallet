@@ -27,6 +27,7 @@ Notification.init(
         "TRANSFER_REJECTED",
         "WITHDRAW_REJECTED",
         "WITHDRAW_CANCEL",
+        "APPROVE_WITHDRAWAL",
         "WITHDRAW_SUCCESSFULL",
         "ACCOUNT_EMPTY",
       ]),
@@ -41,5 +42,8 @@ Notification.init(
     updatedAt: "updated_at",
   }
 );
+
+// User.hasMany(Notification)
+// Notification.belongsTo(User)
 
 module.exports = Notification;
