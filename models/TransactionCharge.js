@@ -17,7 +17,8 @@ TransactionCharge.init({
         references:{
             model:TransactionType,
             key:'id'
-        }
+        },
+        onDelete: 'CASCADE'
     }
 },{sequelize,modelName:'transaction_charge',timestamps:false})
 

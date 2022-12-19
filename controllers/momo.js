@@ -73,6 +73,7 @@ const updateTransactionCharges = async (req,res)=>{
 
 const transferMoney = (req, res) => {
   const { sender, reciever, amount } = req.body;
+  res.send('request recieve')
 };
 
 const withdrawMoney = (req, res) => {};

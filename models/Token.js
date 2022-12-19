@@ -21,6 +21,7 @@ Token.init(
         key: "id",
         onDelete:'CASCADE'
       },
+      onDelete: 'CASCADE'
     },
   },
   { sequelize, tableName: "auth_token", timestamps: false }

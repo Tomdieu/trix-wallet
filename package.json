@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "clear && nodemon index.js",
-    "test":""
+    "test": ""
   },
   "keywords": [],
   "author": "",
@@ -25,8 +25,11 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "sequelize": "^6.25.3",
+    "sequelize-serialize": "^1.2.0",
     "socket.io": "^4.5.4",
     "sqlite3": "^5.1.2",
+    "swagger-jsdoc": "^6.2.5",
+    "swagger-ui-express": "^4.6.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

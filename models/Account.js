@@ -46,6 +46,7 @@ Account.init(
         key: "id",
         onDelete:'CASCADE'
       },
+      onDelete: 'CASCADE'
     },
   },
   {

@@ -14,6 +14,7 @@ Notification.init(
         key: "id",
         onDelete:'CASCADE'
       },
+      onDelete: 'CASCADE'
     },
     message: {
       type: DataTypes.TEXT,
