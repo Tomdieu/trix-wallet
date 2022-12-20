@@ -12,7 +12,6 @@ Notification.init(
       refrences: {
         model: User,
         key: "id",
-        onDelete:'CASCADE'
       },
       onDelete: 'CASCADE'
     },
@@ -28,6 +27,7 @@ Notification.init(
         "DEPOSIT_REJECTED",
         "TRANSFER_REJECTED",
         "WITHDRAW_REJECTED",
+        "WITHDRAW_PENDING",
         "WITHDRAW_CANCEL",
         "APPROVE_WITHDRAWAL",
         "WITHDRAW_SUCCESSFULL",
@@ -46,6 +46,6 @@ Notification.init(
 );
 
 // User.hasMany(Notification)
-// Notification.belongsTo(User)
+Notification.belongsTo(User,{foreignKey:{name:'user_id'},targetKey:'id'})
 
 module.exports = Notification;

@@ -18,7 +18,7 @@ Token.init(
       type: DataTypes.BIGINT,
       refrences: {
         model: User,
-        key: "id",
+        key: "user_id",
       },
       onDelete: 'CASCADE'
     },
@@ -27,6 +27,6 @@ Token.init(
 );
 
 // User.hasOne(Token)
-// Token.belongsTo(User)
+Token.belongsTo(User,{foreignKey:{name:'user_id',allowNull:false},targetKey:'id',keyType:DataTypes.BIGINT})
 
 module.exports = Token;

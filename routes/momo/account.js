@@ -6,7 +6,9 @@ const { validate } = require("../../models/validation");
 const updateAccountSchema = require("../../models/schema/updateAccountSchema");
 const transactionChargeShema = require("../../models/schema/transactionChargeShema");
 const transferMoneySchema = require('../../models/schema/transferMoneySchema')
-const depositMoneySchema = require('../../models/schema/depostiMoneySchema')
+const depositMoneySchema = require('../../models/schema/depositMoneySchema')
+const withdrawMoneySchema = require('../../models/schema/withdrawMoneySchema')
+
 
 
 
@@ -58,5 +60,7 @@ router.patch(
 router.post('/transfer-money', TokenMiddleWare, validate(transferMoneySchema),transferMoney)
 
 router.post('/deposit',TokenMiddleWare,AgentMiddleware,validate(depositMoneySchema),depositMoney)
+
+router.post('/withdraw',TokenMiddleWare,AgentMiddleware,validate(withdrawMoneySchema),withdrawMoney)
 
 module.exports = router;

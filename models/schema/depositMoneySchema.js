@@ -59,7 +59,7 @@ const depostiMoneySchema = {
   },
   pin_code: {
     notEmpty: true,
-    errorMessage:"pin code require to validate the tranaction",
+    errorMessage:"pin code require to validate the transaction",
     custom: {
       options: async (value, { req }) => {
         if (value) {

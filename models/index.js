@@ -12,6 +12,7 @@ const sequelize = require("../utils/database");
 sequelize
   .sync({logging:true})
   .then(() => {
+    
     const typ = ["DEPOSIT", "TRANSFER", "WITHDRAW"];
 
     typ.map(async (transaction_type, index) => {
@@ -29,6 +30,7 @@ sequelize
   });
 
 module.exports = {
+  sequelize,
   User,
   Account,
   TransactionCharge,

@@ -28,6 +28,8 @@ const updateAccountSchema = {
     },
   },
   is_agent: {
+    isBoolean:true,
+    errorMessage:'Must be a boolean value ie 0 or 1',
     custom: {
       options: async (value, { req }) => {
         if (value) {
