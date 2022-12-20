@@ -4,7 +4,17 @@ const sequelize = require("../utils/database");
 const Account = require("./Account");
 const TransactionCharge = require("./TransactionCharge");
 
-class Transaction extends Model {}
+class Transaction extends Model {
+  async getSender(){
+    const sender = await Account.findByPk(this.sender)
+    return sender
+  }
+
+  async getReciever(){
+    const reciever = await Account.findByPk(this.reciever)
+    return reciever
+  }
+}
 
 Transaction.init(
   {
@@ -71,17 +81,24 @@ Transaction.init(
     sequelize,
     hooks: {
       afterCreate: async (transaction, option) => {
+        console.log(transaction)
         if (transaction) {
           transaction.code = 2000000 + transaction.id;
           const txn = await transaction.save();
           return txn
         }
       },
+      afterUpdate:async (transaction,option) =>{
+        if(type == ''){
+          
+        }
+      }
     },
     tableName: "transaction",
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
 );
+
 
 module.exports = Transaction;

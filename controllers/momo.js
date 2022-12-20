@@ -1,3 +1,4 @@
+const { DataTypes, Sequelize,Op } = require("sequelize");
 const {
   Account,
   TransactionCharge,
@@ -9,9 +10,10 @@ const {
 
 const getAccountInfo = async (req, res) => {
   const authenticated_user = req.user;
-
+  
   const account = await Account.findOne({
     where: { user_id: authenticated_user.id },
+    include:User
   });
 
   res
@@ -125,11 +127,11 @@ const updateTransactionCharges = async (req, res) => {
 const transferMoney = async (req, res) => {
   const { reciever, amount } = req.body;
   const user = req.user;
-  const sender_account = await Account.findOne({
+  var sender_account = await Account.findOne({
     where: { user_id: user.id },
   });
 
-  const reciever_account = await Account.findOne({
+  var reciever_account = await Account.findOne({
     where: { account_number: reciever },
   });
 
@@ -170,66 +172,75 @@ const transferMoney = async (req, res) => {
       message: "transfer rejected",
     });
   } else {
-
-    const trx= await sequelize.transaction()
+    const trx = await sequelize.transaction({ autocommit: true });
 
     try {
-      sender_account.decrement(["balance"], { by: Number(amount) });
+      await sender_account.decrement(["balance"], { by: Number(amount) });
 
-    reciever_account.increment(["balance"], { by: Number(amount) });
+      await reciever_account.increment(["balance"], { by: Number(amount) });
 
-    await sender_account.save({transaction: trx});
-    await reciever_account.save({transaction: trx});
+      sender_account = await sender_account.reload();
+      reciever_account = await reciever_account.reload();
 
-    const t = await Transaction.create({
-      amount: Number(amount),
-      code: [...Array(8)].map(() => (Math.random() * 10) | 0).join(""),
-      charge: charge.id,
-      sender: sender_account.id,
-      reciever: reciever_account.id,
-      type: "TRANSFER",
-      status: "SUCCESSFULL",
-    },{transaction: trx});
-    const reciever = await reciever_account.user();
+      const t = await Transaction.create(
+        {
+          amount: Number(amount),
+          code: [...Array(8)].map(() => (Math.random() * 10) | 0).join(""),
+          charge: charge.id,
+          sender: sender_account.id,
+          reciever: reciever_account.id,
+          type: "TRANSFER",
+          status: "SUCCESSFULL",
+        }
+        // { transaction: trx }
+      );
 
-    if (user.lang == "FR") {
-      await Notification.create({
-        user_id: user.id,
-        message: `Vous avez envoyer ${Number(
-          amount
-        )} XAF a ${reciever.getFullName()} avec success. Code transaction ${
-          t.code
-        } nouveau solde : ${sender_account.balance} XAF`,
-        type: "TRANSFER_SUCCESSFULL",
-      },{transaction: trx});
-    } else {
-      await Notification.create({
-        user_id: user.id,
-        message: `You have successfully send ${Number(
-          amount
-        )} XAF to ${reciever.getFullName()} successfully.Transaction code ${
-          t.code
-        } new balance : ${sender_account.balance} XAF`,
-        type: "TRANSFER_SUCCESSFULL",
-      },{transaction: trx});
-    }
-    await trx.commit()
-    res.send({
-      success: true,
-      data: { transaction: t.toJSON(), account: sender_account.toJSON() },
-      message: "transfer successfull",
-    });
+      const reciever = await reciever_account.user();
+
+      if (user.lang == "FR") {
+        await Notification.create(
+          {
+            user_id: user.id,
+            message: `Vous avez envoyer ${Number(
+              amount
+            )} XAF a ${reciever.getFullName()} avec success. Code transaction ${
+              t.code
+            } nouveau solde : ${sender_account.balance} XAF`,
+            type: "TRANSFER_SUCCESSFULL",
+          },
+          { transaction: trx }
+        );
+      } else {
+        await Notification.create(
+          {
+            user_id: user.id,
+            message: `You have successfully send ${Number(
+              amount
+            )} XAF to ${reciever.getFullName()} successfully.Transaction code ${
+              t.code
+            } new balance : ${sender_account.balance} XAF`,
+            type: "TRANSFER_SUCCESSFULL",
+          },
+          { transaction: trx }
+        );
+      }
+
+      trx.commit().then(() => {
+        res.send({
+          success: true,
+          data: { account: sender_account.toJSON(), transaction: t.toJSON() },
+          message: "transfer successfull",
+        });
+      });
     } catch (error) {
-      await trx.rollback()
+      await trx.rollback();
       res.send({
         success: false,
         data: [],
         message: "Something went wrong",
-        errors:error
+        errors: error,
       });
     }
-
-    
   }
 };
 
@@ -258,9 +269,7 @@ const withdrawMoney = async (req, res) => {
     where: { name: "WITHDRAW" },
   });
 
-  amount = Number(amount);
-
-  if (amount < 100) {
+  if (Number(amount) < 100) {
     const t = await Transaction.create({
       amount: Number(amount),
       code: [...Array(8)].map(() => (Math.random() * 10) | 0).join(""),
@@ -300,33 +309,27 @@ const withdrawMoney = async (req, res) => {
 
       // reciever_account.increment(["balance"], { by: Number(amount) });
 
-      await sender_account.save({ transaction: trx });
-      await reciever_account.save({ transaction: trx });
-
-      const t = await Transaction.create(
-        {
-          amount: Number(amount),
-          code: [...Array(8)].map(() => (Math.random() * 10) | 0).join(""),
-          charge: charge.id,
-          sender: sender_account.id,
-          reciever: reciever_account.id,
-          type: "WITHDRAW",
-          status: "PENDING",
-        },
-        { transaction: trx }
-      );
+      const t = await Transaction.create({
+        amount: Number(amount),
+        code: [...Array(8)].map(() => (Math.random() * 10) | 0).join(""),
+        charge: charge.id,
+        sender: sender_account.id,
+        reciever: reciever_account.id,
+        type: "WITHDRAW",
+        status: "PENDING",
+      });
       const reciever = await reciever_account.user();
 
       if (user.lang == "FR") {
         await Notification.create(
           {
             user_id: user.id,
-            message: `Vous avez un retrait de ${Number(
+            message: `Vous avez initier un retrait de ${Number(
               amount
             )} XAF du compte de ${reciever.getFullName()} . Code transaction ${
               t.code
-            } nouveau solde : ${sender_account.balance} XAF`,
-            type: "DEPOSIT_SUCCESSFULL",
+            }`,
+            type: "WITHDRAW_PENDING",
           },
           { transaction: trx }
         );
@@ -338,8 +341,8 @@ const withdrawMoney = async (req, res) => {
               amount
             )} XAF from the account of ${reciever.getFullName()}.Transaction code ${
               t.code
-            } new balance : ${sender_account.balance} XAF`,
-            type: "DEPOSIT_SUCCESSFULL",
+            }`,
+            type: "WITHDRAW_PENDING",
           },
           { transaction: trx }
         );
@@ -348,7 +351,7 @@ const withdrawMoney = async (req, res) => {
       res.send({
         success: true,
         data: { transaction: t.toJSON(), account: sender_account.toJSON() },
-        message: "deposit successfull",
+        message: "withdraw initiated",
       });
     } catch (error) {
       res.send({
@@ -414,12 +417,12 @@ const depositMoney = async (req, res) => {
   } else {
     const trx = await sequelize.transaction();
     try {
-      sender_account.decrement(["balance"], { by: Number(amount) });
+      await sender_account.decrement(["balance"], { by: Number(amount) });
 
-      reciever_account.increment(["balance"], { by: Number(amount) });
+      await reciever_account.increment(["balance"], { by: Number(amount) });
 
-      await sender_account.save({ transaction: trx });
-      await reciever_account.save({ transaction: trx });
+      await sender_account.reload()
+      await reciever_account.reload()
 
       const t = await Transaction.create(
         {
@@ -430,8 +433,7 @@ const depositMoney = async (req, res) => {
           reciever: reciever_account.id,
           type: "DEPOSIT",
           status: "SUCCESSFULL",
-        },
-        { transaction: trx }
+        }
       );
       const reciever = await reciever_account.user();
 
@@ -462,7 +464,7 @@ const depositMoney = async (req, res) => {
           { transaction: trx }
         );
       }
-      trx.commit()
+      trx.commit();
       res.send({
         success: true,
         data: { transaction: t.toJSON(), account: sender_account.toJSON() },
@@ -481,7 +483,157 @@ const depositMoney = async (req, res) => {
 };
 
 // -----------------VALIDATED WITHDRAW----------------------------
-const validatedWithdraw = (req, res) => {};
+
+const pendingWithdrawals = async (req, res) => {
+  const _user = req.user  
+  const user = await User.findOne({where:{ id: _user.id},include:Account});
+  
+  const user_account = user.account;
+  
+  const minutes = 2;
+
+  const pending_withdrawals = await Transaction.findAll({
+    where:{
+      status:'PENDING',
+      type:'WITHDRAW',
+      sender:user_account.id,
+      created_at:{
+        [Op.lte]:new Date(),
+        [Op.gte]:new Date(new Date() - minutes * 60 * 1000)
+      },
+    },
+    order:[['created_at','DESC']]
+  })
+  if(!pending_withdrawals){
+    res.status(200).send({ success:true,data:[],message:'You don\'t have pending withdrawals'})
+  }
+  else{
+
+    res.status(200).send({ success:true,data:pending_withdrawals,message:'all your pending withdrawal valid between 2 minutes'})
+  }
+};
+
+const listPendingWithdrawal = async (req, res) => {
+  const user = req.user
+  if(user.is_superuser){
+
+    const pending_withdrawals = await Transaction.findAll({
+      where:{
+        status:'PENDING',
+        type:'WITHDRAW',
+        created_at:{
+          [Op.lte]:new Date(),
+        },
+      },
+      order:[['created_at','DESC']]
+    })
+    if(pending_withdrawals){
+      res.status(200).send({ success:true,data:pending_withdrawals,message:'all your pending withdrawal valid between 2 minutes'})
+    }
+    else{
+      res.status(200).send({ success:true,data:[],message:'You don\'t have pending withdrawals'})
+  
+    }
+  }
+  else{
+    res.status(400).send({success:false,errors:'You are not authorize'})
+  }
+}
+
+const getPendingWithdrawal = async (req, res) => {
+  const {id} = req.params;
+  const user = req.user
+  const account = await Account.findOne({include:{
+    model:User,
+    where:{
+      id:user.id
+    }
+  }})
+
+  const pending_withdrawals = await getWithdraw(id,account.id);
+
+  if(pending_withdrawals){
+    res.status(200).send({ success:true,data:pending_withdrawals,message:'all your pending withdrawal valid between 2 minutes'})
+  }
+  else{
+    res.status(200).send({ success:true,data:[],message:'You don\'t have pending withdrawals'})
+
+  }
+}
+
+/**
+ * 
+ * This function get a valid pending withdrawal which the id and account id was passed 
+ * 
+ * @param {int} id the transaction id
+ * @param {int} sender_id  the sender account id
+ */
+const getWithdraw = async (id,sender_id) =>{
+  const pending_withdrawals = await Transaction.findOne({
+    where:{
+      id:id,
+      sender:sender_id,
+      status:'PENDING',
+      type:'WITHDRAW',
+      created_at:{
+        [Op.lte]:new Date(),
+        [Op.gte]:new Date(new Date() - minutes * 60 * 1000)
+      },
+    },
+    order:[['created_at','DESC']]
+  })
+
+  return pending_withdrawals
+}
+
+const validatedWithdraw = async (req, res) => {
+  const {id} = req.params;
+  const user = req.user
+  const account = await Account.findOne({include:{
+    model:User,
+    where:{
+      id:user.id
+    }
+  }})
+
+  const pending_withdrawals = await getWithdraw(id,account.id);
+  
+  if(pending_withdrawals){
+    pending_withdrawals.status = 'SUCCESSFULL'
+    await pending_withdrawals.save()
+    await pending_withdrawals.reload()
+    res.status(200).send({ success:true,data:pending_withdrawals,message:'You have successfully approve the withdrawal'})
+  }
+  else{
+    res.status(200).send({ success:true,data:[],message:'No pending withdrawal'})
+
+  }
+}
+
+const cancelWithdraw = async (req,res) => {
+  const {id} = req.params;
+  const user = req.user
+  const account = await Account.findOne({include:{
+    model:User,
+    where:{
+      id:user.id
+    }
+  }})
+
+  const pending_withdrawals = await getWithdraw(id,account.id);
+  
+  if(pending_withdrawals){
+    pending_withdrawals.status = 'CANCEL'
+    await pending_withdrawals.save()
+    await pending_withdrawals.reload()
+    res.status(200).send({ success:true,data:pending_withdrawals,message:'You have successfully cancel the withdrawal'})
+  }
+  else{
+    res.status(200).send({ success:true,data:[],message:'No pending withdrawal'})
+
+  }
+}
+
 
 module.exports = {
   listAccounts,
@@ -490,7 +642,11 @@ module.exports = {
   transferMoney,
   withdrawMoney,
   depositMoney,
+  pendingWithdrawals,
+  getPendingWithdrawal,
+  listPendingWithdrawal,
   validatedWithdraw,
+  cancelWithdraw,
   transactionCharges,
   getTransactionCharges,
   updateTransactionCharges,

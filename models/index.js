@@ -10,7 +10,7 @@ const Notification = require("./Notification");
 const sequelize = require("../utils/database");
 
 sequelize
-  .sync({logging:true})
+  .sync({logging:false})
   .then(() => {
     
     const typ = ["DEPOSIT", "TRANSFER", "WITHDRAW"];
@@ -24,6 +24,8 @@ sequelize
       }
     });
     console.log("db is ready!");
+
+    
   })
   .catch((e) => {
     console.error(e)

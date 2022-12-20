@@ -33,22 +33,22 @@ class User extends Model {
     return this.first_name + " " + this.last_name;
   }
 
-  async getAccount(){
-    const Account = require('./Account');
-    const account = await Account.findOne({where:{user_id:this.id}})
-    return account
-  }
+  // async getAccount(){
+  //   const Account = require('./Account');
+  //   const account = await Account.findOne({where:{user_id:this.id}})
+  //   return account
+  // }
 
-  async getNtifications(){
+  async getNotifications(){
     const Notification = require('./Notification')
     const notifications = Notification.findAll({where:{user_id:this.id}})
 
     return notifications
   }
 
-  notifications = this.getNtifications().then(d=>d) 
+  notifications = this.getNotifications().then(d=>d) 
 
-  account = this.getAccount().then(acc=>acc)
+  // account = this.getAccount().then(acc=>acc)
 }
 
 User.init(
@@ -106,6 +106,9 @@ User.init(
     createdAt: "created_at",
     updatedAt: "updated_at",
     hooks: {
+      beforeValidate:async (user,options)=>{
+        user.is_superuser = Number(user.is_superuser)
+      },
       beforeCreate: async (user, options) => {
         const hashPassword = await bcrypt.hash(user.password, 10);
         user.password = hashPassword;

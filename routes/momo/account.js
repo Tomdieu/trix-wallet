@@ -9,9 +9,7 @@ const transferMoneySchema = require('../../models/schema/transferMoneySchema')
 const depositMoneySchema = require('../../models/schema/depositMoneySchema')
 const withdrawMoneySchema = require('../../models/schema/withdrawMoneySchema')
 
-
-
-
+const pendingWithdrawalSchema = require('../../models/schema/pendingWithdrawalSchema')
 
 const {
   momoControllers: {
@@ -22,7 +20,12 @@ const {
     getTransactionCharges,
     transferMoney,
     depositMoney,
-    withdrawMoney
+    withdrawMoney,
+    pendingWithdrawals,
+    getPendingWithdrawal,
+    listPendingWithdrawal,
+    validatedWithdraw,
+    cancelWithdraw
   },
 } = require("../../controllers");
 
@@ -62,5 +65,16 @@ router.post('/transfer-money', TokenMiddleWare, validate(transferMoneySchema),tr
 router.post('/deposit',TokenMiddleWare,AgentMiddleware,validate(depositMoneySchema),depositMoney)
 
 router.post('/withdraw',TokenMiddleWare,AgentMiddleware,validate(withdrawMoneySchema),withdrawMoney)
+
+router.get('/pending-withdrawals',TokenMiddleWare,pendingWithdrawals)
+
+router.get('/pending-withdrawals/:id',TokenMiddleWare,validate(pendingWithdrawalSchema),getPendingWithdrawal)
+
+router.get('/pending-withdrawals-list',TokenMiddleWare,AdminMiddleware,listPendingWithdrawal)
+
+router.post('/pending-withdrawals/:id/validate',TokenMiddleWare,validate(pendingWithdrawalSchema),validatedWithdraw)
+
+router.post('/pending-withdrawals/:id/cancel',TokenMiddleWare,validate(pendingWithdrawalSchema),cancelWithdraw)
+
 
 module.exports = router;

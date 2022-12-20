@@ -63,7 +63,7 @@ Account.init(
   }
 );
 
-// User.hasOne(Account)
-// Account.belongsTo(User)
+User.hasOne(Account,{foreignKey:'user_id',sourceKey:'id'})
+Account.belongsTo(User,{foreignKey:'user_id',targetKey:'id'})
 
 module.exports = Account;

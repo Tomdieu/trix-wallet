@@ -45,7 +45,7 @@ Notification.init(
   }
 );
 
-// User.hasMany(Notification)
-Notification.belongsTo(User,{foreignKey:{name:'user_id'},targetKey:'id'})
+User.hasMany(Notification,{foreignKey:'user_id',sourceKey:'id'})
+Notification.belongsTo(User,{foreignKey:'user_id',targetKey:'id'})
 
 module.exports = Notification;

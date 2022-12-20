@@ -65,7 +65,7 @@ const updateUser = async (req, res) => {
   if (last_name) user.last_name = last_name;
   if (email) user.email = email;
   if (phone_number) user.phone_number = phone_number;
-  if (is_superuser) user.is_superuser = is_superuser;
+  if (is_superuser) user.is_superuser = Number(is_superuser);
 
   await user.save();
 

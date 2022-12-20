@@ -26,7 +26,7 @@ Token.init(
   { sequelize, tableName: "auth_token", timestamps: false }
 );
 
-// User.hasOne(Token)
-Token.belongsTo(User,{foreignKey:{name:'user_id',allowNull:false},targetKey:'id',keyType:DataTypes.BIGINT})
+User.hasOne(Token,{foreignKey:'user_id',sourceKey:'id'})
+Token.belongsTo(User,{foreignKey:'user_id',targetKey:'id'})
 
 module.exports = Token;
