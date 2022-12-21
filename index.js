@@ -1,9 +1,9 @@
 const express = require("express");
 const cron = require("node-cron");
-const swaggerDoc = require('./utils/swagger')
+// const swaggerDoc = require('./utils/swagger')
 
 const routes = require("./routes");
-const { square } = require("./tasks");
+const { cancelAllWithdrawals } = require("./tasks");
 
 require("./models");
 
@@ -24,14 +24,15 @@ app.get("/", (req, res) => {
 });
 
 
-
 // run automatic tasks
-cron.schedule("*/15 * * * * *", () => {
-  // square(Math.floor(Math.random()*99))
+cron.schedule("*/15 * * * * *",() => {
+  // cancel all the withdrawals
+
+  cancelAllWithdrawals().then(()=>{})
 });
 
 app.listen(PORT, async () => {
   console.log(`Server running on PORT ${PORT} at http://127.0.0.1:${PORT}`);
   
-  swaggerDoc(app,PORT)
+  // swaggerDoc(app,PORT)
 });

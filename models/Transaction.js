@@ -89,8 +89,10 @@ Transaction.init(
         }
       },
       afterUpdate:async (transaction,option) =>{
-        if(type == ''){
-          
+        if(transaction.type == 'WITHDRAW'){
+          if(transaction.status === 'CANCEL'){
+            // console.info('Cancel')
+          }
         }
       }
     },

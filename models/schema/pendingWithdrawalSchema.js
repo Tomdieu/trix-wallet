@@ -6,11 +6,14 @@ const pendingWithdrawal = {
         errorMessage:'withdrawal id require',
         custom:{
             options:async (value,{req}) => {
+                console.log(value,' enter')
                 if(value){
                     const {Transaction,User, Account} = require('../');
-
+                    const {Op} = require('sequelize')
                     const user = await User.findOne({ where:{id:req.user.id},include:Account})
-
+                    
+                    const minutes = 2
+                    
                     const pending_withdrawal = await Transaction.findOne({
                         where:{
                             id:value,
