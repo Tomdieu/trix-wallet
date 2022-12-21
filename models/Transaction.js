@@ -2,17 +2,21 @@ const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../utils/database");
 
 const Account = require("./Account");
+const {User} = require("./User")
 const TransactionCharge = require("./TransactionCharge");
 
 class Transaction extends Model {
   async getSender(){
-    const sender = await Account.findByPk(this.sender)
+    const sender = await Account.findByPk(this.sender,{include:User})
     return sender
   }
 
   async getReciever(){
-    const reciever = await Account.findByPk(this.reciever)
+    const reciever = await Account.findByPk(this.reciever,{include:User})
     return reciever
+  }
+
+  async createNotifications(){
   }
 }
 
@@ -91,7 +95,10 @@ Transaction.init(
       afterUpdate:async (transaction,option) =>{
         if(transaction.type == 'WITHDRAW'){
           if(transaction.status === 'CANCEL'){
-            // console.info('Cancel')
+            const {Notification} = require("./")
+
+            await Notification.create({})
+            await Notification.create({})
           }
         }
       }

@@ -31,6 +31,7 @@ sequelize
     console.error(e)
   });
 
+
 module.exports = {
   sequelize,
   User,

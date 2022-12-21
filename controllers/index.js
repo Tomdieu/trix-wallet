@@ -1,4 +1,5 @@
 module.exports = {
     'userControllers':require('./users'),
-    'momoControllers':require('./momo')
+    'momoControllers':require('./momo'),
+    'notificationControllers':require('./notification')
 }
