@@ -51,7 +51,7 @@ const router = express.Router();
  * @tags Momo
  * @secutity BearerAuth
  * @summary Returns the accunt a the login user
- * @return {Account} 200
+ * @return {Account} 200 - success response -application/json
  */
 router.get("/account", TokenMiddleWare, getAccountInfo);
 
@@ -63,7 +63,7 @@ router.get("/account", TokenMiddleWare, getAccountInfo);
  * @param {Account} request.body
  * @secutity BearerAuth
  * @summary Patialy updated an account
- * @return {Account}
+ * @return {Account} 200 - success response -application/json
  */
 router.patch(
   "/account/:id",
@@ -79,7 +79,7 @@ router.patch(
  * @param {number} id.param
  * @param {Account} request.body
  * @summary Updated An Account
- * @return {Account}
+ * @return {Account} 200 - success response -application/json
  */
 router.put(
   "/account/:id",
@@ -102,7 +102,7 @@ router.put(
  * GET /api/momo/transaction-charges
  * @security BearerAuth
  * @tags Momo
- * @return {array<TransactionCharges>}
+ * @return {array<TransactionCharges>} 200 - Transaction charges updated
  */
 router.get("/transaction-charges", TokenMiddleWare, transactionCharges);
 
@@ -111,7 +111,7 @@ router.get("/transaction-charges", TokenMiddleWare, transactionCharges);
  * @security BearerAuth
  * @tags Momo
  * @param {number} id.param
- * @return {TransactionCharges}
+ * @return {TransactionCharges} 200 - Transaction charges updated
  */
 router.get("/transaction-charges/:id", TokenMiddleWare, getTransactionCharges);
 
@@ -183,7 +183,7 @@ router.post('/withdraw',TokenMiddleWare,AgentMiddleware,validate(withdrawMoneySc
  * @security BearerAuth
  * @tags Momo
  * @summary Gets all your pending withdrawals
- * @returns {object} 200 - success -response - application/json
+ * @returns {object} 200 - success response - application/json
  */
 router.get('/pending-withdrawals',TokenMiddleWare,pendingWithdrawals)
 
@@ -193,7 +193,7 @@ router.get('/pending-withdrawals',TokenMiddleWare,pendingWithdrawals)
  * @tags Momo
  * @param {number} id.param
  * @summary Gets a pending withdrawal
- * @returns {object} 200 - success -response - application/json
+ * @returns {object} 200 - success response - application/json
  */
 router.get('/pending-withdrawals/:id',TokenMiddleWare,validate(pendingWithdrawalSchema),getPendingWithdrawal)
 
@@ -203,7 +203,7 @@ router.get('/pending-withdrawals/:id',TokenMiddleWare,validate(pendingWithdrawal
  * @param {number} id.param
  * @tags Momo
  * @summary Gets all the pending withdrawals only be access by admin
- * @returns {object} 200 - success -response - application/json
+ * @returns {object} 200 - success response - application/json
  */
 router.get('/pending-withdrawals-list',TokenMiddleWare,AdminMiddleware,listPendingWithdrawal)
 
@@ -213,7 +213,7 @@ router.get('/pending-withdrawals-list',TokenMiddleWare,AdminMiddleware,listPendi
  * @param {number} id.param
  * @tags Momo
  * @summary Authorize | Confirm a withdrawal 
- * @returns {object} 200 - success -response - application/json
+ * @returns {object} 200 - success response - application/json
  */
 router.post('/pending-withdrawals/:id/validate',TokenMiddleWare,validate(pendingWithdrawalSchema),validatedWithdraw)
 
@@ -223,7 +223,7 @@ router.post('/pending-withdrawals/:id/validate',TokenMiddleWare,validate(pending
  * @tags Momo
  * @param {number} id.param
  * @summary Deny | Cancel a withdrawal 
- * @returns {object} 200 - success -response - application/json
+ * @returns {object} 200 - success response - application/json
  */
 router.post('/pending-withdrawals/:id/cancel',TokenMiddleWare,validate(pendingWithdrawalSchema),cancelWithdraw)
 
