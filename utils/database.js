@@ -10,4 +10,6 @@ const sequelize = new Sequelize("trix-wallet-db", "user", "pass", {
   logging: false
 });
 
+// if(process.env === 'PRODCUTION')
+
 module.exports = sequelize;

@@ -44,6 +44,8 @@ Socket(server);
 // module.exports = { instance };
 exports.instance = instance;
 
+console.log(process.env)
+
 server.listen(PORT, async () => {
   console.log(`Server running on PORT ${PORT} at http://127.0.0.1:${PORT}`);
 });
