@@ -1,14 +1,14 @@
 {
   "name": "project2",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Small Transfer money api",
   "main": "index.js",
   "scripts": {
     "start": "clear && nodemon index.js",
     "test": "mocha test"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["Nodejs","Express","Transfer Money Api"],
+  "author": "ivantom",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
