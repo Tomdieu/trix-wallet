@@ -161,7 +161,7 @@ const transferMoney = async (req, res) => {
       await Notification.create({
         user_id: user.id,
         message:
-          "Sorry you can't transfer an amount lesser than 100" +
+          "Sorry you can't transfer an amount lesser than 100" +  
           sender_account.currency,
         type: "TRANSFER_REJECTED",
       });
