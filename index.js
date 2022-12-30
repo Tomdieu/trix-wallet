@@ -6,9 +6,12 @@ const swaggerDoc = require("./utils/docs.js");
 const routes = require("./routes");
 const { cancelAllWithdrawals } = require("./tasks");
 
+
+
 require("./models");
 
 const app = express();
+var morgan = require('morgan')
 const server = require("http").Server(app);
 
 // Cors
@@ -19,6 +22,8 @@ app.use(express.json());
 
 //parse form data
 app.use(express.urlencoded({ extended: false }));
+
+app.use(morgan('combined'))
 
 const PORT = process.env.PORT | 5000;
 
