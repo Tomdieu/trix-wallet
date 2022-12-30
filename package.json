@@ -7,7 +7,11 @@
     "start": "clear && nodemon index.js",
     "test": "mocha test"
   },
-  "keywords": ["Nodejs","Express","Transfer Money Api"],
+  "keywords": [
+    "Nodejs",
+    "Express",
+    "Transfer Money Api"
+  ],
   "author": "ivantom",
   "license": "ISC",
   "dependencies": {
@@ -20,6 +24,7 @@
     "express-oas-validator": "^3.0.1",
     "express-session": "^1.17.3",
     "express-validator": "^6.14.2",
+    "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
     "node-cron": "^3.0.2",
     "node-mailer": "^0.1.1",
@@ -37,8 +42,5 @@
     "chai": "^4.3.7",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.20"
-  },
-  "engines": {
-    "node": "18.x"
   }
 }
