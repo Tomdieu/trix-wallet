@@ -7,7 +7,6 @@ const routes = require("./routes");
 const { cancelAllWithdrawals } = require("./tasks");
 
 
-
 require("./models");
 
 const app = express();

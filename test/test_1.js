@@ -1,7 +1,7 @@
-const {expect} = require('chai')
+const { expect } = require('chai')
 const { it } = require('mocha')
 process.env.NODE_ENV = 'TESTING'
-// console.log(process.env)
+// console.log(process.env.NODE_ENV)
 
 describe('Test 1',async ()=>{
     const {User,Token}=require('../models')

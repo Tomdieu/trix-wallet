@@ -1,4 +1,4 @@
-const { DataTypes, Sequelize,Op } = require("sequelize");
+const { Sequelize,Op } = require("sequelize");
 const {
   Account,
   TransactionCharge,
