@@ -2,4 +2,7 @@
 
 ## This is a small money transfer app api
 
-## made with Express Js
+made with
+- Node JS
+- Express JS
+- Sequelize JS 
